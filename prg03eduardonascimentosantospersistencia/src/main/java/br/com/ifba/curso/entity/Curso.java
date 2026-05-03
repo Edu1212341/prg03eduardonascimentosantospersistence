@@ -9,12 +9,37 @@ package br.com.ifba.curso.entity;
  * @author eduardo
  */
 
+
+// izem ao Hibernate como criar a tabela
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+/**
+ *
+ * @author eduardo
+ */
+
+@Entity //  vai virar uma tabela 
 public class Curso {
+    
+    @Id //Chave Primária
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //  vai gerar o ID 
     private Long id;
+    
     private String nome;
     private String descricao;
     private int cargaHoraria;
 
+    public Curso(Long id, String nome, String descricao, int cargaHoraria) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    
     public Long getId() {
         return id;
     }
@@ -47,5 +72,4 @@ public class Curso {
         this.cargaHoraria = cargaHoraria;
     }
 
-    
 }

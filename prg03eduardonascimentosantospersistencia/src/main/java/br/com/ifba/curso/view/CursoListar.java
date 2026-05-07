@@ -28,6 +28,7 @@ public class CursoListar extends javax.swing.JFrame {
 
         try { // Tenta executar
             //Estudando encontrei essa forma de declarar o parametro completo. assim consigo carregar os dados salvos no banco...
+            
             java.util.List <Curso> cursosAtivos = entityManager.createQuery("select c from Curso as c").getResultList();
         
             javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblCursos.getModel();
@@ -36,10 +37,10 @@ public class CursoListar extends javax.swing.JFrame {
             for (Curso curso : cursosAtivos) {
             modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
             }
-        } catch (Exception ex) { // Captura exceção
+        } catch (Exception ex) { 
             JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
         
-        } finally { // Sempre executa
+        } finally { 
             entityManager.close();
             entityManagerFactory.close();
         }
@@ -167,9 +168,9 @@ public class CursoListar extends javax.swing.JFrame {
          return;
         }
     
-        // Pergunta se o usuário tem certeza
+        // Pergunta se o usuário tem certeza/  carrega a tabela antes de tudo
         carregarTabela();
-        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);
+        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);//Joptionpane de pergunta
         if (confirmacao == JOptionPane.YES_OPTION) {
             Long id = (Long) tblCursos.getValueAt(linha, 3);
         
@@ -181,7 +182,7 @@ public class CursoListar extends javax.swing.JFrame {
                 Curso cursoEncontrado = em.find(Curso.class, id);
                 
                 em.getTransaction().begin();
-                em.remove(cursoEncontrado);
+                em.remove(cursoEncontrado);//apaga definitivamente o curso com ID encontrado
                 em.getTransaction().commit();
                 JOptionPane.showMessageDialog(null, "Excluindo Curso");
             }

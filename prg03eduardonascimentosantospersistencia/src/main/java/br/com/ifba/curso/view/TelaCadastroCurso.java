@@ -4,6 +4,10 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.entity.Curso;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,10 +21,15 @@ public class TelaCadastroCurso extends javax.swing.JFrame {
     /**
      * Creates new form TelaCadastroCurso
      */
+    private CursoListar telaPrincipal;
+    
     public TelaCadastroCurso() {
         initComponents();
     }
 
+    public void setTelaPrincipal(CursoListar tela) {
+        this.telaPrincipal = tela;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -140,7 +149,33 @@ public class TelaCadastroCurso extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Salvando Alteracoes");
+        Curso curso = new Curso();
+        curso.setNome(txtInserirNome.getText());
+        curso.setDescricao(txtInserirDescricao.getText());
+        curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
+        curso.setAtivo(true);
+        
+        EntityManagerFactory entityManagerFac = Persistence.createEntityManagerFactory("gerenciamento_curso");
+        EntityManager entityManager = entityManagerFac.createEntityManager();
+        
+        try{
+            entityManager.getTransaction().begin();
+            entityManager.persist(curso);
+            entityManager.getTransaction().commit();
+            JOptionPane.showMessageDialog(null, "Salvando");
+            if (this.telaPrincipal != null) {
+                this.telaPrincipal.carregarTabela(); // Manda a tela inicial se atualizar!
+            }
+            dispose(); // Fecha a tela de cadastro
+        }catch(Exception ex){
+            
+            JOptionPane.showMessageDialog(null, "Infelizmente não foi possivel salvar o curso, tente novamente mais tarde");
+        }
+        finally{
+            entityManager.close();
+            entityManagerFac.close();
+        }
+        
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

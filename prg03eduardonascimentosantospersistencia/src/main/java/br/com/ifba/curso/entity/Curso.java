@@ -11,33 +11,46 @@ package br.com.ifba.curso.entity;
 
 
 // izem ao Hibernate como criar a tabela
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 /**
  *
  * @author eduardo
  */
-
+/*5 lines*/
 @Entity //  vai virar uma tabela 
+@Table (name = "cursos")
 public class Curso {
     
     @Id //Chave Primária
     @GeneratedValue(strategy = GenerationType.IDENTITY) //  vai gerar o ID 
     private Long id;
     
+    @Column (name = "nome", nullable = false)
     private String nome;
+    
+    @Column (name = "descricao_curso", nullable = false)
     private String descricao;
+    
+    @Column (name = "carga_horaria", nullable = false)
     private int cargaHoraria;
+    
+    @Column (name = "ativo", nullable = false)
+    private boolean ativo;
 
-    public Curso(Long id, String nome, String descricao, int cargaHoraria) {
-        this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.cargaHoraria = cargaHoraria;
+    
+    public boolean isAtivo() {
+        return ativo;
     }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
 
     
     public Long getId() {

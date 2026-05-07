@@ -4,6 +4,10 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.entity.Curso;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,8 +21,16 @@ public class TelaEditarCurso extends javax.swing.JFrame {
     /**
      * Creates new form TelaCadastroCurso
      */
+    private Long idCursoEmEdicao;
+    
     public TelaEditarCurso() {
         initComponents();
+    }
+    public void carregarTudo(String nome, String descricao, int cargaHoraria, Long ID){
+        this.idCursoEmEdicao = ID;
+        this.txtInserirNome.setText(nome);
+        this.txtInserirDescricao.setText(descricao);
+        this.txtInserirCargaHoraria.setText(String.valueOf(cargaHoraria));
     }
 
     /**
@@ -140,7 +152,34 @@ public class TelaEditarCurso extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Salvando Alteracoes");
+        
+        Curso curso = new Curso();
+        curso.setId(this.idCursoEmEdicao); // ID automatico que foi passado para a tela
+        curso.setNome(txtInserirNome.getText());
+        curso.setDescricao(txtInserirDescricao.getText());//TODOS OS DADOS SAO COLETADOS E PASSADOS PARA CURSO
+        curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
+        curso.setAtivo(true); // curso ativo
+        
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("gerenciamento_curso");
+        EntityManager em = emf.createEntityManager();
+        
+        try{
+            em.getTransaction().begin();
+            em.merge(curso);
+            em.getTransaction().commit();
+            dispose();
+            JOptionPane.showMessageDialog(null, "Salvando Alteracoes");
+
+        }
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Erro ao salvar Alteracoes");
+
+        }
+        
+        finally{
+            em.close();
+            emf.close();
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

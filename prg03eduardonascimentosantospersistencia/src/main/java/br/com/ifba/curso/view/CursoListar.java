@@ -4,6 +4,10 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.entity.Curso;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,8 +21,32 @@ public class CursoListar extends javax.swing.JFrame {
     /**
      * Creates new form CursoListar
      */
+    
+    public void carregarTabela() {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("gerenciamento_curso");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try { // Tenta executar
+            //Estudando encontrei essa forma de declarar o parametro completo. assim consigo carregar os dados salvos no banco...
+            java.util.List <Curso> cursosAtivos = entityManager.createQuery("select c from Curso as c").getResultList();
+        
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblCursos.getModel();
+            modelo.setNumRows(0);
+        
+            for (Curso curso : cursosAtivos) {
+            modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
+            }
+        } catch (Exception ex) { // Captura exceção
+            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+        
+        } finally { // Sempre executa
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
     public CursoListar() {
         initComponents();
+        carregarTabela();
     }
 
     /**
@@ -63,9 +91,17 @@ public class CursoListar extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Name", "Descrição", "Carga Horaria", "ID"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Long.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblCursos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -73,22 +109,24 @@ public class CursoListar extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtBuscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(80, 80, 80)
-                        .addComponent(btnAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(39, 39, 39)
                         .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addComponent(btnAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,20 +149,73 @@ public class CursoListar extends javax.swing.JFrame {
 
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_txtBuscarActionPerformed
 
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
         // TODO add your handling code here:
-        new TelaCadastroCurso().setVisible(true);
+        TelaCadastroCurso tela = new TelaCadastroCurso();
+        tela.setTelaPrincipal(this);
+        tela.setVisible(true);
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Excluindo Curso");
+        int linha = tblCursos.getSelectedRow();
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione um curso!");
+         return;
+        }
+    
+        // Pergunta se o usuário tem certeza
+        carregarTabela();
+        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            Long id = (Long) tblCursos.getValueAt(linha, 3);
+        
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("gerenciamento_curso");
+            EntityManager em = emf.createEntityManager();
+            
+            try {
+                
+                Curso cursoEncontrado = em.find(Curso.class, id);
+                
+                em.getTransaction().begin();
+                em.remove(cursoEncontrado);
+                em.getTransaction().commit();
+                JOptionPane.showMessageDialog(null, "Excluindo Curso");
+            }
+             catch (Exception ex) {
+                    
+                JOptionPane.showMessageDialog(null, "Erro ");
+                    
+            } finally {
+                em.close();
+                emf.close();
+                carregarTabela();
+            }
+        }
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        new TelaEditarCurso().setVisible(true);
+        int linhaSelecionada = tblCursos.getSelectedRow();
+        
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione um curso na tabela para editar!");
+        }else{
+            long idSelecionado = (long) tblCursos.getValueAt(linhaSelecionada, 3);
+            
+            String nomeSelecionado = (String) tblCursos.getValueAt(linhaSelecionada, 0);
+            String descricaoSelecionada = (String) tblCursos.getValueAt(linhaSelecionada, 1);
+            Integer cargaSelecionada = (Integer) tblCursos.getValueAt(linhaSelecionada, 2);
+            TelaEditarCurso telaEditarCurso = new TelaEditarCurso();
+  
+            telaEditarCurso.carregarTudo(nomeSelecionado, descricaoSelecionada, cargaSelecionada, idSelecionado);
+            telaEditarCurso.setVisible(true);
+        }
+        
+        
+    
     }//GEN-LAST:event_btnEditarActionPerformed
 
     /**

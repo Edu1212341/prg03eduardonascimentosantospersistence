@@ -11,12 +11,14 @@ package br.com.ifba.curso.entity;
 
 
 // izem ao Hibernate como criar a tabela
+import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 /**
  *
  * @author eduardo
@@ -24,12 +26,8 @@ import jakarta.persistence.Table;
 /*5 lines*/
 @Entity //  vai virar uma tabela 
 @Table (name = "cursos")
-public class Curso {
-    
-    @Id //Chave Primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //  vai gerar o ID 
-    private Long id;
-    
+public class Curso extends PersistenceEntity implements Serializable{
+        
     @Column (name = "nome", nullable = false)
     private String nome;
     
@@ -49,16 +47,6 @@ public class Curso {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNome() {

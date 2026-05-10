@@ -4,6 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -154,26 +156,20 @@ public class TelaCadastroCurso extends javax.swing.JFrame {
         curso.setDescricao(txtInserirDescricao.getText());
         curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
         curso.setAtivo(true);
+    
+        try {
+        // A View apenas cria o objeto e o entrega para o DAO salvar
+            CursoIDao cursoDao = new CursoDao();
+            cursoDao.save(curso); 
         
-        EntityManagerFactory entityManagerFac = Persistence.createEntityManagerFactory("gerenciamento_curso");
-        EntityManager entityManager = entityManagerFac.createEntityManager();
+            JOptionPane.showMessageDialog(null, "Curso salvo com sucesso!");
         
-        try{
-            entityManager.getTransaction().begin();
-            entityManager.persist(curso);
-            entityManager.getTransaction().commit();
-            JOptionPane.showMessageDialog(null, "Salvando");
             if (this.telaPrincipal != null) {
-                this.telaPrincipal.carregarTabela(); // Manda a tela inicial se atualizar!
+                this.telaPrincipal.carregarTabela();
             }
-            dispose(); // Fecha a tela de cadastro
-        }catch(Exception ex){
-            
-            JOptionPane.showMessageDialog(null, "Infelizmente não foi possivel salvar o curso, tente novamente mais tarde");
-        }
-        finally{
-            entityManager.close();
-            entityManagerFac.close();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao salvar: " + ex.getMessage());
         }
         
     }//GEN-LAST:event_btnSalvarActionPerformed

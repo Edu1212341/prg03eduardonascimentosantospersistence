@@ -1,5 +1,11 @@
 /home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/CursoSave.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/dao/CursoDao.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/dao/CursoIDao.java
 /home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/entity/Curso.java
 /home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/view/CursoListar.java
 /home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/view/TelaCadastroCurso.java
 /home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/curso/view/TelaEditarCurso.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/infrastructure/dao/GenericDao.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/infrastructure/dao/GenericIDao.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/infrastructure/entity/PersistenceEntity.java
+/home/eduardo/Documentos/GitHub/prg03eduardonascimentosantospersistence/prg03eduardonascimentosantospersistencia/src/main/java/br/com/ifba/turma/entity/Turma.java

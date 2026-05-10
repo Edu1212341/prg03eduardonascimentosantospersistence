@@ -4,6 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -22,27 +24,20 @@ public class CursoListar extends javax.swing.JFrame {
      * Creates new form CursoListar
      */
     
-    public void carregarTabela() {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("gerenciamento_curso");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-        try { // Tenta executar
-            //Estudando encontrei essa forma de declarar o parametro completo. assim consigo carregar os dados salvos no banco...
-            
-            java.util.List <Curso> cursosAtivos = entityManager.createQuery("select c from Curso as c").getResultList();
-        
-            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblCursos.getModel();
-            modelo.setNumRows(0);
-        
+   public void carregarTabela() {
+    try {
+        // Agora usamos o DAO para buscar a lista, sem lidar com JPA diretamente
+        CursoIDao cursoDao = new CursoDao(); // [cite: 598]
+        java.util.List<Curso> cursosAtivos = cursoDao.findAll(); // [cite: 363, 424]
+    
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblCursos.getModel();
+        modelo.setNumRows(0);
+    
             for (Curso curso : cursosAtivos) {
-            modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
+                modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
             }
-        } catch (Exception ex) { 
-            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
-        
-        } finally { 
-            entityManager.close();
-            entityManagerFactory.close();
+        }catch (Exception ex) { 
+            JOptionPane.showMessageDialog(this, "Erro ao carregar tabela: " + ex.getMessage());
         }
     }
     public CursoListar() {
@@ -165,34 +160,25 @@ public class CursoListar extends javax.swing.JFrame {
         int linha = tblCursos.getSelectedRow();
         if (linha == -1) {
             JOptionPane.showMessageDialog(null, "Selecione um curso!");
-         return;
+            return;
         }
-    
-        // Pergunta se o usuário tem certeza/  carrega a tabela antes de tudo
-        carregarTabela();
-        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);//Joptionpane de pergunta
+
+        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             Long id = (Long) tblCursos.getValueAt(linha, 3);
         
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("gerenciamento_curso");
-            EntityManager em = emf.createEntityManager();
-            
             try {
-                
-                Curso cursoEncontrado = em.find(Curso.class, id);
-                
-                em.getTransaction().begin();
-                em.remove(cursoEncontrado);//apaga definitivamente o curso com ID encontrado
-                em.getTransaction().commit();
-                JOptionPane.showMessageDialog(null, "Excluindo Curso");
-            }
-             catch (Exception ex) {
-                    
-                JOptionPane.showMessageDialog(null, "Erro ");
-                    
+                CursoIDao cursoDao = new CursoDao();
+                // Primeiro buscamos o objeto completo pelo ID
+                Curso cursoEncontrado = cursoDao.findById(id); 
+            
+                if (cursoEncontrado != null) {
+                    cursoDao.delete(cursoEncontrado); 
+                    JOptionPane.showMessageDialog(null, "Curso excluído com sucesso!");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Erro ao excluir: " + ex.getMessage());
             } finally {
-                em.close();
-                emf.close();
                 carregarTabela();
             }
         }

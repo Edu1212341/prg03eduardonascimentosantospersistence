@@ -1,6 +1,12 @@
 br/com/ifba/curso/entity/Curso.class
-br/com/ifba/CursoSave.class
 br/com/ifba/curso/view/TelaCadastroCurso.class
+br/com/ifba/curso/dao/CursoIDao.class
+br/com/ifba/infrastructure/entity/PersistenceEntity.class
+br/com/ifba/curso/dao/CursoDao.class
+br/com/ifba/infrastructure/dao/GenericDao.class
+br/com/ifba/CursoSave.class
+br/com/ifba/infrastructure/dao/GenericIDao.class
 br/com/ifba/curso/view/CursoListar.class
 br/com/ifba/curso/view/CursoListar$1.class
 br/com/ifba/curso/view/TelaEditarCurso.class
+br/com/ifba/turma/entity/Turma.class

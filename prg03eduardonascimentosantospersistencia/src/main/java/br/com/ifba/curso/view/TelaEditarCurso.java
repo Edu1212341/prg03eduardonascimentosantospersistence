@@ -4,6 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -154,31 +156,20 @@ public class TelaEditarCurso extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         Curso curso = new Curso();
-        curso.setId(this.idCursoEmEdicao); // ID automatico que foi passado para a tela
+        curso.setId(this.idCursoEmEdicao); 
         curso.setNome(txtInserirNome.getText());
-        curso.setDescricao(txtInserirDescricao.getText());//TODOS OS DADOS SAO COLETADOS E PASSADOS PARA CURSO
+        curso.setDescricao(txtInserirDescricao.getText());
         curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
-        curso.setAtivo(true); // curso ativo
+        curso.setAtivo(true);
+    
+        try {
+            CursoIDao cursoDao = new CursoDao();
+            cursoDao.update(curso);
         
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("gerenciamento_curso");
-        EntityManager em = emf.createEntityManager();
-        
-        try{
-            em.getTransaction().begin();
-            em.merge(curso);
-            em.getTransaction().commit();
+            JOptionPane.showMessageDialog(null, "Alterações salvas com sucesso!");
             dispose();
-            JOptionPane.showMessageDialog(null, "Salvando Alteracoes");
-
-        }
-        catch(Exception ex){
-            JOptionPane.showMessageDialog(null, "Erro ao salvar Alteracoes");
-
-        }
-        
-        finally{
-            em.close();
-            emf.close();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 

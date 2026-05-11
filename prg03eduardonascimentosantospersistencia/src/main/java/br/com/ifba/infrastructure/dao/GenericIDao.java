@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author eduardo
  */
-public interface GenericIDao<Entity extends PersistenceEntity> {
+public interface GenericIDao<Entity extends PersistenceEntity> {// Basicamente os mé
     Entity save(Entity entity);
     Entity update(Entity entity);
     void delete(Entity entity);

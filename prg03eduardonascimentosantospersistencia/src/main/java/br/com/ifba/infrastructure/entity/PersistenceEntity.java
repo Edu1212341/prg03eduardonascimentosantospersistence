@@ -14,7 +14,7 @@ import jakarta.persistence.MappedSuperclass;
  * @author eduardo
  */
 @MappedSuperclass
-public class PersistenceEntity {
+public class PersistenceEntity {//A classe base que tomou o ID de curso
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

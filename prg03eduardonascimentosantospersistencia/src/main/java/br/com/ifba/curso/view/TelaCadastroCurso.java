@@ -4,6 +4,7 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.controller.CursoController;
 import br.com.ifba.curso.dao.CursoDao;
 import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
@@ -154,24 +155,32 @@ public class TelaCadastroCurso extends javax.swing.JFrame {
         Curso curso = new Curso();
         curso.setNome(txtInserirNome.getText());
         curso.setDescricao(txtInserirDescricao.getText());
-        curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
-        curso.setAtivo(true);
     
+        // caso o usu deixe a carga horária vazia
         try {
-        // A View apenas cria o objeto e o entrega para o DAO salvar
-            CursoIDao cursoDao = new CursoDao();
-            cursoDao.save(curso); 
-        
-            JOptionPane.showMessageDialog(null, "Curso salvo com sucesso!");
-        
+            curso.setCargaHoraria(Integer.parseInt(txtInserirCargaHoraria.getText()));
+        } catch (NumberFormatException e) {
+            curso.setCargaHoraria(0); // O Service vai bloquear isto por causa da nossa validação!
+        }
+    
+        curso.setAtivo(true);
+
+        try {
+            //áchama o Controller
+            CursoController cursoController = new CursoController();
+            cursoController.save(curso); 
+    
+            JOptionPane.showMessageDialog(null, "Curso guardado com sucesso!");
+    
             if (this.telaPrincipal != null) {
                 this.telaPrincipal.carregarTabela();
             }
             dispose();
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null, "Aviso: " + ex.getMessage(), "Erro de Validação", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao guardar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

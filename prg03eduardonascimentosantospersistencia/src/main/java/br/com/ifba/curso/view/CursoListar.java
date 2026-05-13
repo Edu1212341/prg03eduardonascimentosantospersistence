@@ -4,6 +4,7 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.controller.CursoController;
 import br.com.ifba.curso.dao.CursoDao;
 import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
@@ -24,20 +25,15 @@ public class CursoListar extends javax.swing.JFrame {
      * Creates new form CursoListar
      */
     
-   public void carregarTabela() {
-    try {
-        // Agora usamos o DAO para buscar a lista, sem lidar com JPA diretamente
-        CursoIDao cursoDao = new CursoDao(); // [cite: 598]
-        java.util.List<Curso> cursosAtivos = cursoDao.findAll(); // [cite: 363, 424]
-    
+    public void carregarTabela() {
+        CursoController controller = new CursoController();
+        java.util.List<Curso> cursos = controller.findAll(); //Metodo de carregar atualizado
+
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblCursos.getModel();
         modelo.setNumRows(0);
-    
-            for (Curso curso : cursosAtivos) {
-                modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
-            }
-        }catch (Exception ex) { 
-            JOptionPane.showMessageDialog(this, "Erro ao carregar tabela: " + ex.getMessage());
+
+        for (Curso curso : cursos) {
+            modelo.addRow(new Object[]{curso.getNome(), curso.getDescricao(), curso.getCargaHoraria(), curso.getId()});
         }
     }
     public CursoListar() {
@@ -158,29 +154,16 @@ public class CursoListar extends javax.swing.JFrame {
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         // TODO add your handling code here:
         int linha = tblCursos.getSelectedRow();
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um curso!");
-            return;
-        }
-
-        int confirmacao = JOptionPane.showConfirmDialog(null, "Deseja excluir este curso?", "Atenção", JOptionPane.YES_NO_OPTION);
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            Long id = (Long) tblCursos.getValueAt(linha, 3);
+        if (linha != -1) {
+        Long id = (Long) tblCursos.getValueAt(linha, 3);
         
-            try {
-                CursoIDao cursoDao = new CursoDao();
-                // Primeiro buscamos o objeto completo pelo ID
-                Curso cursoEncontrado = cursoDao.findById(id); 
-            
-                if (cursoEncontrado != null) {
-                    cursoDao.delete(cursoEncontrado); 
-                    JOptionPane.showMessageDialog(null, "Curso excluído com sucesso!");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Erro ao excluir: " + ex.getMessage());
-            } finally {
-                carregarTabela();
-            }
+        CursoController controller = new CursoController();
+        Curso cursoParaApagar = new Curso();
+        cursoParaApagar.setId(id);
+        
+        controller.delete(cursoParaApagar);
+        carregarTabela();
+        JOptionPane.showMessageDialog(null, "Curso removido!");
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
 

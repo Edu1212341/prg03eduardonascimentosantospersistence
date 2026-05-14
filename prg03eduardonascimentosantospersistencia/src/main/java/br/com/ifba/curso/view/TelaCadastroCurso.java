@@ -170,13 +170,13 @@ public class TelaCadastroCurso extends javax.swing.JFrame {
             CursoController cursoController = new CursoController();
             cursoController.save(curso); 
     
-            JOptionPane.showMessageDialog(null, "Curso guardado com sucesso!");
+            JOptionPane.showMessageDialog(null, "Curso guardado com sucesso");
     
             if (this.telaPrincipal != null) {
                 this.telaPrincipal.carregarTabela();
             }
             dispose();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {//Uma excessao mais especifica parainformacoes erradas...
             JOptionPane.showMessageDialog(null, "Aviso: " + ex.getMessage(), "Erro de Validação", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Erro ao guardar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);

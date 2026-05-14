@@ -5,12 +5,7 @@
 package br.com.ifba.curso.view;
 
 import br.com.ifba.curso.controller.CursoController;
-import br.com.ifba.curso.dao.CursoDao;
-import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import javax.swing.JOptionPane;
 
 /**
